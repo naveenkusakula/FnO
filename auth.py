@@ -57,7 +57,6 @@ class FlattradeAuth:
         return hashlib.sha256(data.encode()).hexdigest()
 
     def get_api_token(self, request_code):
-
         api_secret_hash = self.generate_api_secret_hash(request_code)
 
         payload = {
@@ -73,63 +72,4 @@ class FlattradeAuth:
             return response.json().get("token")
         else:
             print("Error:", response.status_code, response.text)
-            return None
-
-
-class FlattradeAPI:
-    def __init__(self, config: FlattradeConfig, auth_token: str):
-        self.config = config
-        self.auth_token = auth_token
-
-    def get_positions(self):
-        """
-        Fetches current positions from Flattrade using the provided auth token.
-        """
-        payload = f"jData={{\n\t\"uid\": \"{self.config.CLIENT_ID}\",\n\t\"actid\": \"{self.config.CLIENT_ID}\"\n}}&jKey={self.auth_token}"
-        headers = {
-            "Content-Type": "application/json",
-            "User-Agent": "insomnia/11.0.1"
-        }
-
-        response = requests.request("POST", self.config.POSITIONS_URL, data=payload, headers=headers)
-
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Error fetching positions: {response.status_code}, {response.text}")
-            return None
-
-
-def main():
-    config = FlattradeConfig()
-    
-    # Validate that all required environment variables are set
-    try:
-        config.validate()
-    except ValueError as e:
-        print(f"Configuration error: {e}")
-        print("Please ensure all required environment variables are set in your .env file")
-        return
-    
-    if config.FINAL_TOKEN:
-        final_token = config.FINAL_TOKEN
-        print("Using existing token:", final_token)
-    else:
-        auth = FlattradeAuth(config)
-        request_code = auth.get_request_code()
-        print("Authorization Code:", request_code)
-        final_token = auth.get_api_token(request_code)
-        print("Final Token:", final_token)
-    
-    # Get positions using the token
-    api = FlattradeAPI(config, final_token)
-    positions = api.get_positions()
-    
-    if positions:
-        print("Current Positions:", positions)
-    else:
-        print("Failed to fetch positions.")
-
-
-if __name__ == "__main__":
-    main()
+            return None 
