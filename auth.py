@@ -8,11 +8,11 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
-from config import FlattradeConfig
+from config import Config
 
 
-class FlattradeAuth:
-    def __init__(self, config: FlattradeConfig):
+class Auth:
+    def __init__(self, config: Config):
         self.config = config
 
     def get_request_code(self):
