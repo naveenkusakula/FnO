@@ -6,7 +6,6 @@ import websockets
 
 from config import Config
 
-
 class WebSocketService:
 
     def __init__(self, config: Config, auth_token: str):
@@ -32,8 +31,8 @@ class WebSocketService:
             print("WebSocket connection established")
 
             connect_message = {"t": "c",  # connect task
-                "uid": self.config.CLIENT_ID, "actid": self.config.CLIENT_ID, "source": "API",
-                "susertoken": self.auth_token}
+                               "uid": self.config.CLIENT_ID, "actid": self.config.CLIENT_ID, "source": "API",
+                               "susertoken": self.auth_token}
             print(f"Sending connection request: {connect_message}")
 
             await self.websocket.send(json.dumps(connect_message))
@@ -56,6 +55,9 @@ class WebSocketService:
             return False
 
     async def subscribe_nifty(self) -> bool:
+
+
+        
         if not self.connected:
             print("WebSocket not connected")
             return False
@@ -101,6 +103,7 @@ class WebSocketService:
                     if message_type == "tf":
                         print(f"\nNIFTY Update:")
                         print(f"LTP: {data.get('lp')}, Change: {data.get('pc')}%")
+
                     else:
                         print(f"Received message of type: {message_type}")
                         print(f"Full message data: {data}")

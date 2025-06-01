@@ -18,12 +18,11 @@ class FlatTradeClient:
 
     def _get_token(self) -> str:
         try:
-            print("token from env file:" + self.config.FINAL_TOKEN)
             if self.config.FINAL_TOKEN:
-                print("Using token from environment variables")
+                print("Using token from environment variables: " + self.config.FINAL_TOKEN)
                 return self.config.FINAL_TOKEN
             else:
-                print("No token found in environment, fetching new token...")
+                print("No token found in environment, fetching new token")
                 request_code = self.auth.get_request_code()
                 print(f"Got request code: {request_code}")
                 token = self.auth.get_api_token(request_code)
@@ -58,8 +57,8 @@ class FlatTradeClient:
 def main():
     config = Config()
     client = FlatTradeClient(config)
-    # client.execute("subscribe-nifty50")
-    client.execute("get_positions")
+    client.execute("subscribe-nifty50")
+    #client.execute("get_positions")
 
 
 if __name__ == "__main__":

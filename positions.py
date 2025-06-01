@@ -3,7 +3,6 @@ from typing import Dict, Optional
 import requests
 from config import Config
 
-
 class PositionsService:
 
     def __init__(self, config: Config, auth_token: str):
