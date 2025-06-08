@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
+from decision_maker import DecisionMaker
 
-from websocket_service import WebSocketService
+from web_socket_service import WebSocketService
 
 
 class Command(ABC):
@@ -35,7 +36,8 @@ class SubscribeNiftyCommand(Command):
 
     async def execute(self) -> Any:
         try:
-            self.websocket_service = WebSocketService(self.client.config, self.client._token)
+            dm = DecisionMaker()
+            self.websocket_service = WebSocketService(self.client.config, self.client._token, dm)
 
             if not await self.websocket_service.connect():
                 print("Failed to connect to WebSocket")

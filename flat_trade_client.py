@@ -1,8 +1,9 @@
 from config import Config
 from auth import Auth
-from positions import PositionsService
+from positions_service import PositionsService
 from commands import CommandHandler, GetPositionsCommand, SubscribeNiftyCommand
 from typing import Any, Dict, Optional
+from decision_maker import DecisionMaker
 import asyncio
 
 
@@ -14,6 +15,7 @@ class FlatTradeClient:
         self._token = None
         self._positions_service = None
         self.command_handler = CommandHandler()
+        self.trader = DecisionMaker()
         self._initialize()
 
     def _get_token(self) -> str:

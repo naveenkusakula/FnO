@@ -35,8 +35,5 @@ ENV/
 .env
 .env.*
 
-# Config files with secrets
-config.py
-
 # Logs
 *.log 

@@ -8,9 +8,10 @@ from config import Config
 
 class WebSocketService:
 
-    def __init__(self, config: Config, auth_token: str):
+    def __init__(self, config: Config, auth_token: str, trader):
         self.config = config
         self.auth_token = auth_token
+        self.trader = trader
         self.websocket = None
         self.connected = False
         self.last_update_time = None
@@ -101,9 +102,12 @@ class WebSocketService:
                     self.last_update_time = asyncio.get_event_loop().time()
 
                     if message_type == "tf":
+                        ltp = data.get("lp")
                         print(f"\nNIFTY Update:")
                         print(f"LTP: {data.get('lp')}, Change: {data.get('pc')}%")
-
+                        self.trader.update_price(float(ltp))
+                        signal = self.trader.calculate_signal()
+                        self.trader.execute_trade(signal)
                     else:
                         print(f"Received message of type: {message_type}")
                         print(f"Full message data: {data}")
