@@ -57,8 +57,6 @@ class WebSocketService:
 
     async def subscribe_nifty(self) -> bool:
 
-
-        
         if not self.connected:
             print("WebSocket not connected")
             return False
@@ -94,7 +92,7 @@ class WebSocketService:
         try:
             while self._listening and self.connected:
                 try:
-                    print("Waiting for message...")
+                    # print("Waiting for message...")
                     message = await self.websocket.recv()
                     data = json.loads(message)
                     message_type = data.get("t")
@@ -103,11 +101,12 @@ class WebSocketService:
 
                     if message_type == "tf":
                         ltp = data.get("lp")
-                        print(f"\nNIFTY Update:")
-                        print(f"LTP: {data.get('lp')}, Change: {data.get('pc')}%")
-                        self.trader.update_price(float(ltp))
-                        signal = self.trader.calculate_signal()
-                        self.trader.execute_trade(signal)
+                        print(f"LTP: {ltp}, Change: {data.get('pc')}%")
+                        if ltp is None:
+                            print("Received LTP is None, skipping trade execution")
+                        else:
+                            self.trader.update_price(float(ltp))
+                            self.trader.execute_trade(float(ltp))
                     else:
                         print(f"Received message of type: {message_type}")
                         print(f"Full message data: {data}")

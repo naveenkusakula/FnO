@@ -21,7 +21,7 @@ class FlatTradeClient:
     def _get_token(self) -> str:
         try:
             if self.config.FINAL_TOKEN:
-                print("Using token from environment variables: " + self.config.FINAL_TOKEN)
+                print("Using token from environment variables")
                 return self.config.FINAL_TOKEN
             else:
                 print("No token found in environment, fetching new token")
