@@ -1,10 +1,12 @@
 from config import Config
 from auth import Auth
-from positions_service import PositionsService
+from get_api_service import GetApiService
 from commands import CommandHandler, GetPositionsCommand, SubscribeNiftyCommand
 from typing import Any, Dict, Optional
 from decision_maker import DecisionMaker
 import asyncio
+
+from options_service import OptionsService
 
 
 class FlatTradeClient:
@@ -38,9 +40,14 @@ class FlatTradeClient:
     def _initialize(self) -> None:
         self.config.validate()
         self._token = self._get_token()
-        self._positions_service = PositionsService(self.config, self._token)
-        self.command_handler.register_command("get_positions", GetPositionsCommand(self))
-        self.command_handler.register_command("subscribe-nifty50", SubscribeNiftyCommand(self))
+        self._positions_service = GetApiService(self.config, self._token)
+        self._options_service = OptionsService(self.config, self._token)
+        self.command_handler.register_command(
+            "get_positions", GetPositionsCommand(self)
+        )
+        self.command_handler.register_command(
+            "subscribe-nifty50", SubscribeNiftyCommand(self)
+        )
 
     def get_positions(self) -> Optional[Dict]:
         if not self._positions_service:
@@ -59,8 +66,8 @@ class FlatTradeClient:
 def main():
     config = Config()
     client = FlatTradeClient(config)
-    client.execute("subscribe-nifty50")
-    #client.execute("get_positions")
+    # client.execute("subscribe-nifty50")
+    client.execute("get_positions")
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ import websockets
 
 from config import Config
 
+
 class WebSocketService:
 
     def __init__(self, config: Config, auth_token: str, trader):
@@ -31,9 +32,13 @@ class WebSocketService:
             self.websocket = await websockets.connect(uri, ssl=ssl_context)
             print("WebSocket connection established")
 
-            connect_message = {"t": "c",  # connect task
-                               "uid": self.config.CLIENT_ID, "actid": self.config.CLIENT_ID, "source": "API",
-                               "susertoken": self.auth_token}
+            connect_message = {
+                "t": "c",  # connect task
+                "uid": self.config.CLIENT_ID,
+                "actid": self.config.CLIENT_ID,
+                "source": "API",
+                "susertoken": self.auth_token,
+            }
             print(f"Sending connection request: {connect_message}")
 
             await self.websocket.send(json.dumps(connect_message))
@@ -134,8 +139,13 @@ class WebSocketService:
     async def check_timeout(self) -> None:
         while self.connected:
             current_time = asyncio.get_event_loop().time()
-            if self.last_update_time and (current_time - self.last_update_time) > self.timeout_seconds:
-                print(f"No updates received for {self.timeout_seconds} seconds. Stopping the program.")
+            if (
+                self.last_update_time
+                and (current_time - self.last_update_time) > self.timeout_seconds
+            ):
+                print(
+                    f"No updates received for {self.timeout_seconds} seconds. Stopping the program."
+                )
                 self.connected = False
                 if self.websocket:
                     await self.websocket.close()

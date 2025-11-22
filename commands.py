@@ -37,7 +37,9 @@ class SubscribeNiftyCommand(Command):
     async def execute(self) -> Any:
         try:
             dm = DecisionMaker()
-            self.websocket_service = WebSocketService(self.client.config, self.client._token, dm)
+            self.websocket_service = WebSocketService(
+                self.client.config, self.client._token, dm
+            )
 
             if not await self.websocket_service.connect():
                 print("Failed to connect to WebSocket")
