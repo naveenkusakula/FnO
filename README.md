@@ -2,8 +2,6 @@
 
 FnO is a small Python project providing helper components for working with Futures & Options (FnO) trading workflows. It includes a DecisionMaker component that evaluates positions and makes trading decisions, plus API service wrappers for fetching positions and options data and unit tests for the trading logic.
 
-> Note: This is a draft README. Adjust the example commands and environment variables below to match your repository layout and the actual class/method names in your code.
-
 ## Features
 - DecisionMaker: core trading decision logic (injectable services).
 - GetApiService: fetches positions and market/option data from upstream APIs.
