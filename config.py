@@ -22,6 +22,10 @@ class Config:
         self.POSITIONS_URL = os.getenv("FLATTRADE_POSITIONS_URL")
         self.OPTIONS_URL = os.getenv("FLATTRADE_OPTIONS_URL")
         self.TOKEN_URL = os.getenv("FLATTRADE_TOKEN_URL")
+        self.PLACE_ORDER_URL = os.getenv(
+            "FLATTRADE_PLACE_ORDER_URL",
+            "https://piconnect.flattrade.in/PiConnectTP/PlaceOrder",
+        )
         self.FINAL_TOKEN = os.getenv("FLATTRADE_TOKEN")
         self.WS_TIMEOUT_SECONDS = int(
             os.getenv("FLATTRADE_WS_TIMEOUT", "60")

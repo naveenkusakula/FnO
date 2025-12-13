@@ -36,7 +36,10 @@ class SubscribeNiftyCommand(Command):
 
     async def execute(self) -> Any:
         try:
-            dm = DecisionMaker()
+            dm = DecisionMaker(
+                options_service=self.client._options_service,
+                api_service=self.client._positions_service,
+            )
             self.websocket_service = WebSocketService(
                 self.client.config, self.client._token, dm
             )

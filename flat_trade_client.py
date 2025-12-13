@@ -17,8 +17,12 @@ class FlatTradeClient:
         self._token = None
         self._positions_service = None
         self.command_handler = CommandHandler()
-        self.trader = DecisionMaker()
+        # Initialize dependencies first
         self._initialize()
+        # Pass dependencies to DecisionMaker
+        self.trader = DecisionMaker(
+            options_service=self._options_service, api_service=self._positions_service
+        )
 
     def _get_token(self) -> str:
         try:
@@ -41,7 +45,8 @@ class FlatTradeClient:
         self.config.validate()
         self._token = self._get_token()
         self._positions_service = GetApiService(self.config, self._token)
-        self._options_service = OptionsService(self.config, self._token)
+        # Fix OptionsService init: passing api_service as named or positional arg correctly
+        self._options_service = OptionsService(api_service=self._positions_service)
         self.command_handler.register_command(
             "get_positions", GetPositionsCommand(self)
         )

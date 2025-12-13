@@ -103,6 +103,56 @@ class GetApiService:
             print(f"Exception while fetching options: {e}")
             return None
 
+    def place_order(
+        self,
+        symbol: str,
+        qty: int,
+        transaction_type: str,  # "B" or "S"
+        exchange: str = "NFO",
+        price: float = 0,
+        price_type: str = "LMT",  # "LMT", "MKT", "SL", "SL-M"
+        product_type: str = "M",  # "M" for Normal/Margin, "I" for Intraday, "C" for CNC
+        retention: str = "DAY",
+        trigger_price: float = 0,
+        remarks: str = "API Order",
+    ) -> Optional[Dict]:
+        """
+        Place an order via FlatTrade API.
+        """
+        payload = (
+            f'jData={{\n\t"uid": "{self.config.CLIENT_ID}",\n\t"actid": "{self.config.CLIENT_ID}",'
+            f'\n\t"exch": "{exchange}",'
+            f'\n\t"tsym": "{symbol}",'
+            f'\n\t"qty": "{qty}",'
+            f'\n\t"prc": "{price}",'
+            f'\n\t"prd": "{product_type}",'
+            f'\n\t"trantype": "{transaction_type}",'
+            f'\n\t"prctyp": "{price_type}",'
+            f'\n\t"ret": "{retention}",'
+            f'\n\t"trgprc": "{trigger_price}",'
+            f'\n\t"remarks": "{remarks}"\n}}'
+            f"&jKey={self.auth_token}"
+        )
+        headers = {
+            "Content-Type": "application/json",  # Keeping consistent with get_positions as discussed
+            "User-Agent": "insomnia/11.0.1",
+        }
+
+        try:
+            print(f"Placing order: {transaction_type} {qty} {symbol} @ {price}")
+            response = requests.post(
+                self.config.PLACE_ORDER_URL, data=payload, headers=headers
+            )
+            if response.status_code == 200:
+                resp_json = response.json()
+                print(f"Order Response: {resp_json}")
+                return resp_json
+            print(f"Error placing order: {response.status_code}, {response.text}")
+            return None
+        except Exception as e:
+            print(f"Exception while placing order: {e}")
+            return None
+
 
 if __name__ == "__main__":
     import argparse

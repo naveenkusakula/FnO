@@ -34,6 +34,26 @@ class OptionsService:
             )
         return None
 
+    def get_symbol(self, strike, expiry, option_type):
+        # build tsym like NIFTY28OCT25C26000
+        # Normalize expiry to DDMMMYY uppercase
+        try:
+            dt = datetime.strptime(expiry, "%d-%b-%Y")
+        except Exception:
+            try:
+                dt = datetime.strptime(expiry, "%d-%b-%y")
+            except Exception:
+                dt = datetime.now()  # Fallback? Should probably fail.
+
+        expiry_fmt = dt.strftime("%d%b%y").upper()
+
+        try:
+            strike_int = int(float(strike))
+        except Exception:
+            strike_int = strike
+
+        return f"NIFTY{expiry_fmt}{option_type[0].upper()}{strike_int}"
+
     def select_option(self, price, position_type):
         expiry = get_weekly_expiry()
         if position_type == "CALL":
@@ -43,7 +63,14 @@ class OptionsService:
         else:
             raise ValueError("Invalid position_type")
 
-        option_contract = {"strike": strike, "type": position_type, "expiry": expiry}
+        symbol = self.get_symbol(strike, expiry, position_type)
+
+        option_contract = {
+            "strike": strike,
+            "type": position_type,
+            "expiry": expiry,
+            "symbol": symbol,
+        }
 
         print(f"Selected option: {option_contract}")
         return option_contract
